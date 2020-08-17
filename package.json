@@ -5,7 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "update:demo": "npm run build && push-dir --dir=dist --branch=gh-pages"
+    "update:demo": "vue-cli-service build --mode gh-pages && push-dir --dir=dist --branch=gh-pages"
   },
   "dependencies": {
     "core-js": "^3.6.5",

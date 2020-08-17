@@ -1,3 +1,3 @@
 module.exports = {
-  publicPath: '/infinite-scroll-sample/',
+  publicPath: process.env.PUBLIC_PATH || './',
 };

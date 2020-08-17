@@ -6,7 +6,7 @@ export function fetchData(count = 30) {
     const item = faker.helpers.contextualCard();
     item.paragraph = faker.lorem.paragraph();
     item.img = {
-      src: `/images/${faker.random.number({ min: 1, max: 20 })}.jpeg`,
+      src: `${process.env.BASE_URL}/images/${faker.random.number({ min: 1, max: 20 })}.jpeg`,
       width: `${faker.random.number({ min: 100, max: 700 })}px`,
     };
     result.push(item);
