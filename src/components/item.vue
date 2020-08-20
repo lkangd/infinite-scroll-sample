@@ -24,7 +24,7 @@
       <template v-else>
         <p class="item__paragraph">{{ data.paragraph }}</p>
         <img
-          :src="imgSrc"
+          :src="defferImgSrc"
           :style="{ width: data.img.width }"
           class="item__img"
         />
@@ -61,30 +61,30 @@ export default {
   },
   data() {
     return {
-      imgSrc: '',
+      defferImgSrc: '',
     };
   },
-  mounted() {
-    if (this.fixedHeight) return;
-
-    this.ro = new ResizeObserver((entries, observer) => {
-      for (const entry of entries) {
-        this.$emit('size-change', this.index, entry.contentRect);
-      }
-    });
-    this.ro.observe(this.$refs.item);
+  created() {
     // 模拟图片加载时间
     if (this.data.img.isDeffer) {
-      this.imgSrc = this.data.img.src;
+      this.defferImgSrc = this.data.img.src;
     } else {
       setTimeout(() => {
-        this.imgSrc = this.data.img.src;
+        this.defferImgSrc = this.data.img.src;
         this.data.img.isDeffer = true;
       }, faker.random.number({ min: 300, max: 5000 }));
     }
   },
-  beforeDestroy() {
-    this.ro && this.ro.disconnect();
+  mounted() {
+    if (this.fixedHeight) return;
+
+    const ro = new ResizeObserver((entries, observer) => {
+      for (const entry of entries) {
+        this.$emit('size-change', this.index, entry.contentRect);
+      }
+    });
+    ro.observe(this.$refs.item);
+    this.$once('hook:beforeDestroy', ro.disconnect.bind(ro));
   },
 };
 </script>
