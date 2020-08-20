@@ -44,7 +44,7 @@ import Item from './components/item';
 import PlaceHolder from './components/placeholder';
 import { fetchData } from './helpers';
 
-const PLACEHOLDER_COUNT = 5;
+const PLACEHOLDER_COUNT = 6;
 const BUFFER_SIZE = 3;
 const ESTIMATED_HEIGHT = 180;
 let VISIBLE_COUNT = BUFFER_SIZE * 2;
@@ -69,11 +69,13 @@ export default {
   },
   computed: {
     scrollRunwayEnd() {
-      const fallbackEnd = this.listData.length * ESTIMATED_HEIGHT;
-      const estimatedEnd =
-        this.cachedHeight.reduce((sum, h) => (sum += h || ESTIMATED_HEIGHT), 0) +
-        (this.listData.length - this.cachedHeight.length) * ESTIMATED_HEIGHT;
-      return estimatedEnd || fallbackEnd;
+      const maxScrollY = this.cachedHeight.reduce((sum, h) => (sum += h || ESTIMATED_HEIGHT), 0);
+      const currentAverageH = maxScrollY / this.cachedHeight.length;
+      if (isNaN(currentAverageH)) {
+        return this.listData.length * ESTIMATED_HEIGHT;
+      } else {
+        return maxScrollY + (this.listData.length - this.cachedHeight.length) * currentAverageH;
+      }
     },
   },
   mounted() {
@@ -217,7 +219,7 @@ export default {
     },
     handleLoadMore() {
       const scrollEnd = this.$refs.scroller.scrollTop + this.$refs.scroller.offsetHeight + ESTIMATED_HEIGHT;
-      scrollEnd >= this.scrollRunwayEnd && this.fetchData();
+      (scrollEnd >= this.scrollRunwayEnd || this.anchorItem.index === this.listData.length - 1) && this.fetchData();
     },
   },
   components: { Item, PlaceHolder },
