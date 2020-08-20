@@ -131,11 +131,11 @@ export default {
         }
       }
       // 修正拖动过快导致的滚动到顶端滚动条不足的偏差
-      if (this.$refs.scroller.scrollTop <= 0 && this.anchorItem.index >= 0 && this.anchorItem.offset > 0) {
+      if (this.cachedScrollY[this.firstAttachedItem] <= -1) {
         console.log('revising insufficient');
         this.revising = true;
-        this.$refs.scroller.scrollTop =
-          this.cachedHeight.slice(0, Math.max(0, this.anchorItem.index - 1)).reduce((sum, h) => (sum += h), 0) + this.anchorItem.offset;
+        const actualScrollY = this.cachedHeight.slice(0, Math.max(0, this.anchorItem.index)).reduce((sum, h) => (sum += h), 0);
+        this.$refs.scroller.scrollTop = actualScrollY + this.anchorItem.offset;
         this.lastScrollTop = this.$refs.scroller.scrollTop;
         if (this.$refs.scroller.scrollTop === 0) {
           this.anchorItem = { index: 0, offset: 0 };
@@ -173,7 +173,7 @@ export default {
         this.$set(this.cachedScrollY, item.index, scrollY);
       }
       // 修正拖动过快导致的滚动到顶端有空余的偏差
-      if (this.cachedScrollY[0] !== 0) {
+      if (this.cachedScrollY[0] > 0) {
         console.log('revising redundant');
         this.revising = true;
         const delta = this.cachedScrollY[0];
