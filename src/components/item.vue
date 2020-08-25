@@ -79,9 +79,8 @@ export default {
     if (this.fixedHeight) return;
 
     const ro = new ResizeObserver((entries, observer) => {
-      for (const entry of entries) {
-        this.$emit('size-change', this.index, entry.contentRect);
-      }
+      // 高度发生变化时，将 'size-change' 事件 emit 到父组件
+      this.$emit('size-change', this.index);
     });
     ro.observe(this.$refs.item);
     this.$once('hook:beforeDestroy', ro.disconnect.bind(ro));

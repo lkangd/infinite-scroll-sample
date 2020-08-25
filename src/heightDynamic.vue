@@ -85,8 +85,8 @@ export default {
     this.updateVisibleData();
   },
   methods: {
-    handleSizeChange(index, { height }) {
-      this.calItemScrollY(index, height);
+    handleSizeChange(index) {
+      this.calItemScrollY();
     },
     handleScroll() {
       if (this.revising) return;
@@ -147,7 +147,7 @@ export default {
       }
     },
     // 计算每一个 item 的 translateY 的高度
-    async calItemScrollY(index, height) {
+    async calItemScrollY() {
       await this.$nextTick();
       // 修正 vue diff 算法导致 item 顺序不正确的问题
       this.$refs.items.sort((a, b) => a.index - b.index);
@@ -165,7 +165,7 @@ export default {
         const { height } = item.$el.getBoundingClientRect();
         this.$set(this.cachedHeight, item.index, height);
         const scrollY = this.cachedScrollY[item.index - 1] + this.cachedHeight[item.index - 1];
-        this.$set(this.cachedScrollY, item.index, scrollY || 0 /** 第一个 item.index === 0 不存在上一个 item，所以 scrollY 可能为 NaN */);
+        this.$set(this.cachedScrollY, item.index, scrollY);
       }
       // 计算 anchorItem 前面的 item scrollY
       for (let i = anchorDomIndex - 1; i >= 0; i--) {
