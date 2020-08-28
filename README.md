@@ -287,7 +287,7 @@ calItemScrollY(list) {
 },
 ```
 
-```html{9,17}
+```html
 <template>
   <!-- ... -->
   <item
